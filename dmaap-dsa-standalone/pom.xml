@@ -25,7 +25,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>holmes-dmaap-dsa-standalone</artifactId>
+  <artifactId>dmaap-dsa-standalone</artifactId>
   <modelVersion>4.0.0</modelVersion>
   <name>holmes-dsa/holmes-dmaap-dsa-standalone</name>
   <packaging>pom</packaging>
