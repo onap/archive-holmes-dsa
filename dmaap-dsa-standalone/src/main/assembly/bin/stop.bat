@@ -18,14 +18,14 @@
 title stopping engine-d-service
 
 set HOME=%~dp0
-set Main_Class="org.onap.holmes.rulemgt.RuleActiveApp"
+set Main_Class="org.onap.holmes.dsa.dmaap.DmaapDsaActiveApp"
 
-echo ================== engine-d-service info =============================================
+echo ================== dmaap-dsa-service info =============================================
 echo HOME=$HOME
 echo Main_Class=%Main_Class%
 echo ===============================================================================
 
-echo ### Stopping engine-d-service
+echo ### Stopping dmaap-dsa-service
 cd /d %HOME%
 
 for /f "delims=" %%i in ('"%JAVA_HOME%\bin\jcmd"') do (

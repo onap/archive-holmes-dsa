@@ -32,7 +32,7 @@ RUN mkdir /home/holmes
 
 WORKDIR /home/holmes
 
-ADD holmes-dsa-standalone-*-linux64.tar.gz /home/holmes/
+ADD holmes-dmaap-dsa-standalone-*-linux64.tar.gz /home/holmes/
 
 RUN chmod 755 /home/holmes/bin/*.sh
 
