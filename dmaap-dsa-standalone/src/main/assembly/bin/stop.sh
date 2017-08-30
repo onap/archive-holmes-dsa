@@ -17,9 +17,9 @@
 
 DIRNAME=`dirname $0`
 HOME=`cd $DIRNAME/; pwd`
-Main_Class="org.onap.holmes.rulemgt.RuleActiveApp"
+Main_Class="org.onap.holmes.dsa.dmaap.DmaapDsaActiveApp"
 
-echo ================== engine-d-service info =============================================
+echo ================== dmaap-dsa-service info =============================================
 echo HOME=$HOME
 echo Main_Class=$Main_Class
 echo ===============================================================================
