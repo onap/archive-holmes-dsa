@@ -46,7 +46,7 @@ public class DmaapDsaActiveApp  extends IOCApplication<DmaapDsaConfig> {
         serviceRegisterEntity.setServiceName("holmes-dmaap-dsa");
         serviceRegisterEntity.setProtocol("REST");
         serviceRegisterEntity.setVersion("v1");
-        serviceRegisterEntity.setUrl("/onapapi/holmes-dmaap-dsa/v1/");
+        serviceRegisterEntity.setUrl("/api/holmes-dmaap-dsa/v1/");
         serviceRegisterEntity.setSingleNode(MicroServiceConfig.getServiceIp(), "9103", 0);
         serviceRegisterEntity.setVisualRange("1|0");
         return serviceRegisterEntity;

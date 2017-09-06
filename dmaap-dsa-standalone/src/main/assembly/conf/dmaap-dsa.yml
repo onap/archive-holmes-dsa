@@ -9,7 +9,7 @@ apidescription: ZTE Holmes Data Source Adaptor RESTful APIs
 
 server:
   type: simple
-  rootPath:  '/onapapi/holmes-dmaap-dsa/v1/*'
+  rootPath:  '/api/holmes-dmaap-dsa/v1/*'
   applicationContextPath: /
   adminContextPath: /admin
   connector:
