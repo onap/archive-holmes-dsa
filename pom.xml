@@ -27,7 +27,7 @@
     <artifactId>holmes-dsa-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>holmes-dsa-parent</name>
+    <name>holmes-dsa</name>
     <modules>
         <module>dmaap-dsa</module>
         <module>dmaap-dsa-standalone</module>
