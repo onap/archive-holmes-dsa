@@ -16,13 +16,20 @@
 
 package org.onap.holmes.dsa.dmaap;
 
+import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
+
 import io.dropwizard.setup.Environment;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.onap.holmes.common.api.entity.ServiceRegisterEntity;
 import org.onap.holmes.common.config.MicroServiceConfig;
 import org.onap.holmes.common.dropwizard.ioc.bundle.IOCApplication;
+import org.onap.holmes.common.exception.CorrelationException;
 import org.onap.holmes.common.utils.MSBRegisterUtil;
+import org.onap.msb.sdk.discovery.entity.MicroServiceInfo;
+import org.onap.msb.sdk.discovery.entity.Node;
 
 @Slf4j
 public class DmaapDsaActiveApp  extends IOCApplication<DmaapDsaConfig> {
@@ -33,22 +40,27 @@ public class DmaapDsaActiveApp  extends IOCApplication<DmaapDsaConfig> {
     @Override
     public void run(DmaapDsaConfig configuration, Environment environment) throws Exception {
         super.run(configuration, environment);
-
         try {
-            new MSBRegisterUtil().register(initServiceEntity());
-        } catch (IOException e) {
-            log.warn("Micro service registry httpclient close failure", e);
+            new MSBRegisterUtil().register2Msb(createMicroServiceInfo());
+        } catch (CorrelationException e) {
+            log.warn(e.getMessage(), e);
         }
     }
 
-    private ServiceRegisterEntity initServiceEntity() {
-        ServiceRegisterEntity serviceRegisterEntity = new ServiceRegisterEntity();
-        serviceRegisterEntity.setServiceName("holmes-dmaap-dsa");
-        serviceRegisterEntity.setProtocol("REST");
-        serviceRegisterEntity.setVersion("v1");
-        serviceRegisterEntity.setUrl("/api/holmes-dmaap-dsa/v1/");
-        serviceRegisterEntity.setSingleNode(MicroServiceConfig.getServiceIp(), "9103", 0);
-        serviceRegisterEntity.setVisualRange("1|0");
-        return serviceRegisterEntity;
+    private MicroServiceInfo createMicroServiceInfo() {
+        String[] serviceAddrInfo = MicroServiceConfig.getServiceAddrInfo();
+        MicroServiceInfo msinfo = new MicroServiceInfo();
+        msinfo.setServiceName("holmes-dmaap-dsa");
+        msinfo.setVersion("v1");
+        msinfo.setUrl("/api/holmes-dmaap-dsa/v1/");
+        msinfo.setProtocol("REST");
+        msinfo.setVisualRange("0|1");
+        Set<Node> nodes = new HashSet<>();
+        Node node = new Node();
+        node.setIp(serviceAddrInfo[0]);
+        node.setPort(serviceAddrInfo[1]);
+        nodes.add(node);
+        msinfo.setNodes(nodes);
+        return msinfo;
     }
 }
