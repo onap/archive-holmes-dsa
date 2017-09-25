@@ -78,7 +78,7 @@ public class Subscriber {
         return response.readEntity(List.class);
     }
 
-    List<VesAlarm> extractVesAlarm(List<String> responseEntity) throws IOException {
+    private List<VesAlarm> extractVesAlarm(List<String> responseEntity) throws IOException {
         List<VesAlarm> vesAlarmList = new ArrayList<>();
         for (String entity : responseEntity) {
             vesAlarmList.add(dMaaPResponseUtil.convertJsonToVesAlarm(entity));
