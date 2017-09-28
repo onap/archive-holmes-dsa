@@ -47,6 +47,7 @@ public class DMaaPResponseUtil {
         vesAlarm.setDomain(commonEventHeaderJson.get("domain").asText());
         vesAlarm.setEventId(commonEventHeaderJson.get("eventId").asText());
         vesAlarm.setEventName(commonEventHeaderJson.get("eventName").asText());
+        vesAlarm.setAlarmIsCleared(vesAlarm.getEventName().endsWith("Cleared") ? 1 : 0);
         vesAlarm.setEventType(getTextElementByNode(commonEventHeaderJson, "eventType"));
         vesAlarm.setInternalHeaderFields(
                 getTextElementByNode(commonEventHeaderJson, "internalHeaderFields"));
