@@ -20,12 +20,12 @@
     <parent>
         <groupId>org.onap.oparent</groupId>
         <artifactId>oparent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>0.1.1</version>
     </parent>
 
     <groupId>org.onap.holmes.dsa</groupId>
     <artifactId>holmes-dsa-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>holmes-dsa</name>
     <modules>
