@@ -57,13 +57,18 @@ public class Subscriber {
     private boolean secure;
     private String topic;
     private String url;
-    private String consumerGroup = "g0";
-    private String consumer = "u1";
+    private String consumerGroup = "homlesGrounp1";
+    private String consumer = "homlesGrounp1";
     private String authInfo;
     private String authExpDate;
 
     public List<VesAlarm> subscribe() throws CorrelationException {
-        List<String> response = getDMaaPData();
+        List<String> response;
+        try {
+            response = getDMaaPData();
+        } catch (Exception e) {
+            throw new CorrelationException("Failed to connect to DMapp.", e);
+        }
         try {
             return extractVesAlarm(response);
         } catch (Exception e) {
