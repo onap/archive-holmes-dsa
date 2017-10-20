@@ -57,8 +57,8 @@ public class Subscriber {
     private boolean secure;
     private String topic;
     private String url;
-    private String consumerGroup = "homlesGrounp1";
-    private String consumer = "homlesGrounp1";
+    private String consumerGroup = "homlesGroup1";
+    private String consumer = "homles1";
     private String authInfo;
     private String authExpDate;
 
