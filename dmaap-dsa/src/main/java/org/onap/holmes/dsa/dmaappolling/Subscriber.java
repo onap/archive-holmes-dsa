@@ -19,7 +19,6 @@ package org.onap.holmes.dsa.dmaappolling;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -28,14 +27,15 @@ import lombok.Getter;
 import lombok.Setter;
 import org.glassfish.jersey.client.ClientConfig;
 import org.onap.holmes.common.api.stat.VesAlarm;
+import org.onap.holmes.common.dropwizard.ioc.utils.ServiceLocatorHolder;
 import org.onap.holmes.common.exception.CorrelationException;
 
 @Getter
 @Setter
 public class Subscriber {
 
-    @Inject
-    private DMaaPResponseUtil dMaaPResponseUtil;
+    private DMaaPResponseUtil dMaaPResponseUtil = ServiceLocatorHolder.getLocator()
+            .getService(DMaaPResponseUtil.class);
 
     /**
      * The number of milliseconds to wait for messages if none are immediately available. This
@@ -67,7 +67,7 @@ public class Subscriber {
         try {
             response = getDMaaPData();
         } catch (Exception e) {
-            throw new CorrelationException("Failed to connect to DMapp.", e);
+            throw new CorrelationException("Failed to get DMapp data.", e);
         }
         try {
             return extractVesAlarm(response);
@@ -78,8 +78,8 @@ public class Subscriber {
 
     private List<String> getDMaaPData() {
         Client client = ClientBuilder.newClient(new ClientConfig());
-        WebTarget webTarget = client.target(url);
-        Response response = webTarget.path(topic).path(consumerGroup).path(consumer).request().get();
+        WebTarget webTarget = client.target(url + "/" + consumerGroup + "/" + consumer);
+        Response response = webTarget.request().get();
         return response.readEntity(List.class);
     }
 
