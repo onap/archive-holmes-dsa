@@ -79,7 +79,7 @@ public class Subscriber {
     private List<String> getDMaaPData() {
         Client client = ClientBuilder.newClient(new ClientConfig());
         WebTarget webTarget = client.target(url + "/" + consumerGroup + "/" + consumer);
-        Response response = webTarget.request().get();
+        Response response = webTarget.queryParam("timeout", timeout).request().get();
         return response.readEntity(List.class);
     }
 
