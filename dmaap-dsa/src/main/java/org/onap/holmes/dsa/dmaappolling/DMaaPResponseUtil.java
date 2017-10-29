@@ -51,13 +51,13 @@ public class DMaaPResponseUtil {
         vesAlarm.setEventType(getTextElementByNode(commonEventHeaderJson, "eventType"));
         vesAlarm.setInternalHeaderFields(
                 getTextElementByNode(commonEventHeaderJson, "internalHeaderFields"));
-        vesAlarm.setLastEpochMicrosec(commonEventHeaderJson.get("lastEpochMicfrosec").asLong());
+        vesAlarm.setLastEpochMicrosec(commonEventHeaderJson.get("lastEpochMicrosec").asLong());
         vesAlarm.setNfcNamingCode(getTextElementByNode(commonEventHeaderJson, "nfcNamingCode"));
         vesAlarm.setNfNamingCode(getTextElementByNode(commonEventHeaderJson, "nfNamingCode"));
         vesAlarm.setPriority(commonEventHeaderJson.get("priority").asText());
         vesAlarm.setReportingEntityId(
                 getTextElementByNode(commonEventHeaderJson, "reportingEntityId"));
-        vesAlarm.setReportingEntityName(commonEventHeaderJson.get("reprotingEntityName").asText());
+        vesAlarm.setReportingEntityName(commonEventHeaderJson.get("reportingEntityName").asText());
         vesAlarm.setSequence(commonEventHeaderJson.get("sequence").asInt());
         vesAlarm.setSourceId(getTextElementByNode(commonEventHeaderJson, "sourceId"));
         vesAlarm.setSourceName(commonEventHeaderJson.get("sourceName").asText());
