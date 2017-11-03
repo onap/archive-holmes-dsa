@@ -19,11 +19,9 @@ package org.onap.holmes.dsa.dmaap;
 import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 import io.dropwizard.setup.Environment;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.onap.holmes.common.api.entity.ServiceRegisterEntity;
 import org.onap.holmes.common.config.MicroServiceConfig;
 import org.onap.holmes.common.dropwizard.ioc.bundle.IOCApplication;
 import org.onap.holmes.common.exception.CorrelationException;
@@ -48,7 +46,7 @@ public class DmaapDsaActiveApp  extends IOCApplication<DmaapDsaConfig> {
     }
 
     private MicroServiceInfo createMicroServiceInfo() {
-        String[] serviceAddrInfo = MicroServiceConfig.getServiceAddrInfo();
+        String[] serviceAddrInfo = MicroServiceConfig.getMicroServiceIpAndPort();
         MicroServiceInfo msinfo = new MicroServiceInfo();
         msinfo.setServiceName("holmes-dmaap-dsa");
         msinfo.setVersion("v1");
