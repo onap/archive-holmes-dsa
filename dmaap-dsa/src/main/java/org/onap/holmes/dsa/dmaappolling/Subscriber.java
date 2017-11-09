@@ -67,7 +67,7 @@ public class Subscriber {
         try {
             response = getDMaaPData();
         } catch (Exception e) {
-            throw new CorrelationException("Failed to get DMapp data.", e);
+            throw new CorrelationException("Failed to get data from DMaaP.", e);
         }
         try {
             return extractVesAlarm(response);
