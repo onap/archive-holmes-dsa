@@ -16,7 +16,7 @@
 package org.onap.holmes.dsa.dmaappolling;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -300,7 +300,7 @@ public class DMaaPResponseUtilTest {
         List<AlarmAdditionalField> alarmAdditionalFields = new ArrayList<>();
         AlarmAdditionalField alarmAdditionalField = new AlarmAdditionalField();
         alarmAdditionalField.setName("tian");
-        alarmAdditionalField.setName("22222");
+        alarmAdditionalField.setValue("22222");
         alarmAdditionalFields.add(alarmAdditionalField);
         expected.setAlarmAdditionalInformation(alarmAdditionalFields);
 

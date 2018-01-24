@@ -100,7 +100,7 @@ public class DMaaPResponseUtil {
                     if(alarm.has("name") && alarm.has("value")) {
                         AlarmAdditionalField field = new AlarmAdditionalField();
                         field.setName(getTextElementByNode(alarm, "name"));
-                        field.setName(getTextElementByNode(alarm, "value"));
+                        field.setValue(getTextElementByNode(alarm, "value"));
                         alarms.add(field);
                     }
                 });
