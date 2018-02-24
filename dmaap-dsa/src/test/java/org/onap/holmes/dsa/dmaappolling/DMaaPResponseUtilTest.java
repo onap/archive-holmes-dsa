@@ -21,6 +21,8 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.fastjson.JSONException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -161,7 +163,7 @@ public class DMaaPResponseUtilTest {
     @Test
     public void testDMaaPResponseUtil_input_illegal() throws Exception {
         String json = "***";
-        thrown.expect(IOException.class);
+        thrown.expect(JSONException.class);
         dMaaPResponseUtil.convertJsonToVesAlarm(json);
     }
 

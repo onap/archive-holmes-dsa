@@ -15,95 +15,96 @@
  */
 package org.onap.holmes.dsa.dmaappolling;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.jvnet.hk2.annotations.Service;
 import org.onap.holmes.common.api.stat.AlarmAdditionalField;
 import org.onap.holmes.common.api.stat.VesAlarm;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DMaaPResponseUtil {
 
     public VesAlarm convertJsonToVesAlarm(String responseJson) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.readTree(responseJson);
+        JSONObject jsonNode = JSON.parseObject(responseJson);
+
         VesAlarm vesAlarm = new VesAlarm();
 
-        JsonNode eventJson = jsonNode.get("event");
-
-        JsonNode commonEventHeaderJson = eventJson.get("commonEventHeader");
+        JSONObject eventJson = JSON.parseObject(jsonNode.get("event") +"");
+        JSONObject commonEventHeaderJson = JSON.parseObject(eventJson.get("commonEventHeader") +"");
         convertCommonEventHeaderJsonToEvent(commonEventHeaderJson, vesAlarm);
 
-        JsonNode faultFieldsJson = eventJson.get("faultFields");
+        JSONObject faultFieldsJson = JSON.parseObject(eventJson.get("faultFields") +"");
         convertFaultFieldsJsonToEvent(faultFieldsJson, vesAlarm);
         return vesAlarm;
     }
 
-    private void convertCommonEventHeaderJsonToEvent(JsonNode commonEventHeaderJson,
-            VesAlarm vesAlarm) {
-        vesAlarm.setDomain(commonEventHeaderJson.get("domain").asText());
-        vesAlarm.setEventId(commonEventHeaderJson.get("eventId").asText());
-        vesAlarm.setEventName(commonEventHeaderJson.get("eventName").asText());
+    private void convertCommonEventHeaderJsonToEvent(JSONObject commonEventHeaderJson,
+                                                     VesAlarm vesAlarm) {
+        vesAlarm.setDomain((String) commonEventHeaderJson.get("domain"));
+        vesAlarm.setEventId((String) commonEventHeaderJson.get("eventId"));
+        vesAlarm.setEventName((String) commonEventHeaderJson.get("eventName"));
         vesAlarm.setAlarmIsCleared(vesAlarm.getEventName().endsWith("Cleared") ? 1 : 0);
         vesAlarm.setEventType(getTextElementByNode(commonEventHeaderJson, "eventType"));
         vesAlarm.setInternalHeaderFields(
                 getTextElementByNode(commonEventHeaderJson, "internalHeaderFields"));
-        vesAlarm.setLastEpochMicrosec(commonEventHeaderJson.get("lastEpochMicrosec").asLong());
+        vesAlarm.setLastEpochMicrosec(commonEventHeaderJson.getLong("lastEpochMicrosec"));
         vesAlarm.setNfcNamingCode(getTextElementByNode(commonEventHeaderJson, "nfcNamingCode"));
         vesAlarm.setNfNamingCode(getTextElementByNode(commonEventHeaderJson, "nfNamingCode"));
-        vesAlarm.setPriority(commonEventHeaderJson.get("priority").asText());
+        vesAlarm.setPriority((String) commonEventHeaderJson.get("priority"));
         vesAlarm.setReportingEntityId(
                 getTextElementByNode(commonEventHeaderJson, "reportingEntityId"));
-        vesAlarm.setReportingEntityName(commonEventHeaderJson.get("reportingEntityName").asText());
-        vesAlarm.setSequence(commonEventHeaderJson.get("sequence").asInt());
+        vesAlarm.setReportingEntityName( (String) commonEventHeaderJson.get("reportingEntityName"));
+        vesAlarm.setSequence((Integer) commonEventHeaderJson.get("sequence"));
         vesAlarm.setSourceId(getTextElementByNode(commonEventHeaderJson, "sourceId"));
-        vesAlarm.setSourceName(commonEventHeaderJson.get("sourceName").asText());
-        vesAlarm.setStartEpochMicrosec(commonEventHeaderJson.get("startEpochMicrosec").asLong());
-        vesAlarm.setVersion(commonEventHeaderJson.get("version").asLong());
+        vesAlarm.setSourceName( (String) commonEventHeaderJson.get("sourceName"));
+        vesAlarm.setStartEpochMicrosec(commonEventHeaderJson.getLong("startEpochMicrosec"));
+        vesAlarm.setVersion(commonEventHeaderJson.getLong("version"));
     }
 
-    private void convertFaultFieldsJsonToEvent(JsonNode faultFieldsJson, VesAlarm vesAlarm) {
+    private void convertFaultFieldsJsonToEvent(JSONObject faultFieldsJson, VesAlarm vesAlarm) {
         vesAlarm.setAlarmAdditionalInformation(getListElementByNode(faultFieldsJson, "alarmAdditionalInformation"));
-        vesAlarm.setAlarmCondition(faultFieldsJson.get("alarmCondition").asText());
+        vesAlarm.setAlarmCondition(faultFieldsJson.getString("alarmCondition"));
         vesAlarm.setAlarmInterfaceA(getTextElementByNode(faultFieldsJson, "alarmInterfaceA"));
         vesAlarm.setEventCategory(getTextElementByNode(faultFieldsJson,"eventCategory"));
-        vesAlarm.setEventSeverity(faultFieldsJson.get("eventSeverity").asText());
-        vesAlarm.setEventSourceType(faultFieldsJson.get("eventSourceType").asText());
-        vesAlarm.setFaultFieldsVersion(faultFieldsJson.get("faultFieldsVersion").asLong());
-        vesAlarm.setSpecificProblem(faultFieldsJson.get("specificProblem").asText());
-        vesAlarm.setVfStatus(faultFieldsJson.get("vfStatus").asText());
+        vesAlarm.setEventSeverity(faultFieldsJson.getString("eventSeverity"));
+        vesAlarm.setEventSourceType(faultFieldsJson.getString("eventSourceType"));
+        vesAlarm.setFaultFieldsVersion(faultFieldsJson.getLong("faultFieldsVersion"));
+        vesAlarm.setSpecificProblem(faultFieldsJson.getString("specificProblem"));
+        vesAlarm.setVfStatus(faultFieldsJson.getString("vfStatus"));
     }
 
-    private String getTextElementByNode(JsonNode jsonNode,String name){
-        if(jsonNode.has(name)){
-            return jsonNode.get(name).asText();
+    private String getTextElementByNode(JSONObject jsonNode,String name){
+        if(jsonNode.get(name) != null){
+            return jsonNode.getString(name);
         }
         return null;
     }
 
-    private Long getLongElementByNode(JsonNode jsonNode, String name) {
-        if(jsonNode.has(name)){
-            return jsonNode.get(name).asLong();
+    private Long getLongElementByNode(JSONObject jsonNode, String name) {
+        if(jsonNode.get(name) != null){
+            return jsonNode.getLong(name);
         }
         return null;
     }
 
-    private List<AlarmAdditionalField> getListElementByNode(JsonNode jsonNode, String name){
+    private List<AlarmAdditionalField> getListElementByNode(JSONObject jsonNode, String name){
         List<AlarmAdditionalField> alarms = new ArrayList<AlarmAdditionalField>();
-        if (jsonNode.has(name)) {
-            JsonNode alarmAdditionalInformations = jsonNode.get(name);
-            if (alarmAdditionalInformations.isArray()) {
-                alarmAdditionalInformations.forEach(alarm -> {
-                    if(alarm.has("name") && alarm.has("value")) {
-                        AlarmAdditionalField field = new AlarmAdditionalField();
-                        field.setName(getTextElementByNode(alarm, "name"));
-                        field.setValue(getTextElementByNode(alarm, "value"));
-                        alarms.add(field);
-                    }
-                });
+        if (jsonNode.get(name) != null) {
+            JSONArray alarmAdditionalInformations = jsonNode.getJSONArray(name);
+            for (int i = 0; i < alarmAdditionalInformations.size(); i++) {
+                JSONObject jsonObject = alarmAdditionalInformations.getJSONObject(i);
+                if (jsonObject.get("name") != null
+                        && jsonObject.get("value") != null) {
+                    AlarmAdditionalField field = new AlarmAdditionalField();
+                    field.setName(getTextElementByNode(jsonObject, "name"));
+                    field.setValue(getTextElementByNode(jsonObject, "value"));
+                    alarms.add(field);
+                }
             }
         }
         return alarms;
