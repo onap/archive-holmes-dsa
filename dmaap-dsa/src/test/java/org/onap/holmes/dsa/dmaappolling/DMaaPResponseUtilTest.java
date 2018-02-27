@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.fastjson.JSONException;
+//import com.alibaba.fastjson.JSONException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -163,7 +163,7 @@ public class DMaaPResponseUtilTest {
     @Test
     public void testDMaaPResponseUtil_input_illegal() throws Exception {
         String json = "***";
-        thrown.expect(JSONException.class);
+        thrown.expect(IOException.class);
         dMaaPResponseUtil.convertJsonToVesAlarm(json);
     }
 
