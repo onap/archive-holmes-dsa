@@ -25,7 +25,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import lombok.Getter;
 import lombok.Setter;
-import org.glassfish.jersey.client.ClientConfig;
 import org.onap.holmes.common.api.stat.VesAlarm;
 import org.onap.holmes.common.dropwizard.ioc.utils.ServiceLocatorHolder;
 import org.onap.holmes.common.exception.CorrelationException;
@@ -77,7 +76,7 @@ public class Subscriber {
     }
 
     private List<String> getDMaaPData() {
-        Client client = ClientBuilder.newClient(new ClientConfig());
+        Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(url + "/" + consumerGroup + "/" + consumer);
         Response response = webTarget.queryParam("timeout", timeout).request().get();
         return response.readEntity(List.class);

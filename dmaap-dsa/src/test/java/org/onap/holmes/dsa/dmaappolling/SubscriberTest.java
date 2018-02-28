@@ -15,12 +15,8 @@
  */
 package org.onap.holmes.dsa.dmaappolling;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.regexp.internal.RE;
-import io.dropwizard.cli.Cli;
 import org.easymock.EasyMock;
 import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.jersey.client.ClientConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -133,7 +129,7 @@ public class SubscriberTest {
         Response response = PowerMock.createMock(Response.class);
         Invocation.Builder builder = PowerMock.createMock(Invocation.Builder.class);
 
-        EasyMock.expect(ClientBuilder.newClient(EasyMock.anyObject(ClientConfig.class))).andReturn(client);
+        EasyMock.expect(ClientBuilder.newClient()).andReturn(client);
         EasyMock.expect(client.target(EasyMock.anyObject(String.class))).andReturn(webTarget);
         EasyMock.expect(webTarget.queryParam("timeout", 15000)).andReturn(webTarget);
         EasyMock.expect(webTarget.request()).andReturn(builder);
@@ -144,8 +140,7 @@ public class SubscriberTest {
 
         List<VesAlarm> vesAlarms = new Subscriber().subscribe();
 
-        assertThat(new ObjectMapper().writeValueAsString(vesAlarm),
-                equalTo(new ObjectMapper().writeValueAsString(vesAlarms.get(0))));
+        assertThat(vesAlarm, equalTo(vesAlarms.get(0)));
 
         PowerMock.verifyAll();
     }

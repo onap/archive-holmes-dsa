@@ -32,6 +32,16 @@
         <dependency>
             <groupId>org.onap.msb.java-sdk</groupId>
             <artifactId>msb-java-sdk</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.eclipsesource.jaxrs</groupId>
+                    <artifactId>jersey-all</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.onap.holmes.common</groupId>
@@ -171,7 +181,7 @@
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.15.0-GA</version>
+            <version>3.22.0-GA</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
