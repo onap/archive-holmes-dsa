@@ -39,7 +39,7 @@
                 </exclusion>
                 <exclusion>
                     <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback</artifactId>
+                    <artifactId>logback-classic</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
