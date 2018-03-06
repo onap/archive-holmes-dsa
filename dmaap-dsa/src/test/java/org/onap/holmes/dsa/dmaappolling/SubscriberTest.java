@@ -15,23 +15,22 @@
  */
 package org.onap.holmes.dsa.dmaappolling;
 
-import org.easymock.EasyMock;
+import java.util.HashMap;
+import org.apache.http.HttpResponse;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.onap.holmes.common.api.stat.AlarmAdditionalField;
 import org.onap.holmes.common.api.stat.VesAlarm;
 import org.onap.holmes.common.dropwizard.ioc.utils.ServiceLocatorHolder;
+import org.onap.holmes.common.utils.GsonUtil;
+import org.onap.holmes.common.utils.HttpsUtils;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +40,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 
-@PrepareForTest({ServiceLocatorHolder.class, ServiceLocator.class, ClientBuilder.class,
-    WebTarget.class, Response.class, Invocation.Builder.class, Client.class})
+@PrepareForTest({ServiceLocatorHolder.class, ServiceLocator.class, HttpsUtils.class})
 @RunWith(PowerMockRunner.class)
 public class SubscriberTest {
 
@@ -50,15 +48,15 @@ public class SubscriberTest {
 
     @Before
     public void init() {
-        PowerMock.mockStatic(ServiceLocatorHolder.class);
-        ServiceLocator serviceLocator = PowerMock.createMock(ServiceLocator.class);
-        EasyMock.expect(ServiceLocatorHolder.getLocator()).andReturn(serviceLocator);
-        EasyMock.expect(serviceLocator.getService(DMaaPResponseUtil.class)).andReturn(util);
+        PowerMockito.mockStatic(ServiceLocatorHolder.class);
+        ServiceLocator serviceLocator = PowerMockito.mock(ServiceLocator.class);
+        PowerMockito.when(ServiceLocatorHolder.getLocator()).thenReturn(serviceLocator);
+        PowerMockito.when(serviceLocator.getService(DMaaPResponseUtil.class)).thenReturn(util);
     }
 
     @Test
     public void subscribe() throws Exception {
-
+        PowerMock.resetAll();
         VesAlarm vesAlarm = new VesAlarm();
         vesAlarm.setDomain("ONAP");
         vesAlarm.setEventId("123");
@@ -121,28 +119,24 @@ public class SubscriberTest {
 
         List<String> responseList = new ArrayList<>();
         responseList.add(eventString);
+        String responseJson = GsonUtil.beanToJson(responseList);
 
-
-        PowerMock.mockStatic(ClientBuilder.class);
-        Client client = PowerMock.createMock(Client.class);
-        WebTarget webTarget = PowerMock.createMock(WebTarget.class);
-        Response response = PowerMock.createMock(Response.class);
-        Invocation.Builder builder = PowerMock.createMock(Invocation.Builder.class);
-
-        EasyMock.expect(ClientBuilder.newClient()).andReturn(client);
-        EasyMock.expect(client.target(EasyMock.anyObject(String.class))).andReturn(webTarget);
-        EasyMock.expect(webTarget.queryParam("timeout", 15000)).andReturn(webTarget);
-        EasyMock.expect(webTarget.request()).andReturn(builder);
-        EasyMock.expect(builder.get()).andReturn(response);
-        EasyMock.expect(response.readEntity(List.class)).andReturn(responseList);
+        PowerMockito.mockStatic(HttpsUtils.class);
+        HttpResponse httpResponse = PowerMockito.mock(HttpResponse.class);
+        PowerMockito.when(HttpsUtils.get(Matchers.eq("https://www.onap.org/group/consumer"),
+                Matchers.any(HashMap.class), Matchers.eq(15000))).thenReturn(httpResponse);
+        PowerMockito.when(HttpsUtils.extractResponseEntity(httpResponse)).thenReturn(responseJson);
 
         PowerMock.replayAll();
 
-        List<VesAlarm> vesAlarms = new Subscriber().subscribe();
-
-        assertThat(vesAlarm, equalTo(vesAlarms.get(0)));
-
+        Subscriber subscriber = new Subscriber();
+        subscriber.setUrl("https://www.onap.org");
+        subscriber.setConsumerGroup("group");
+        subscriber.setConsumer("consumer");
+        List<VesAlarm> vesAlarms = subscriber.subscribe();
         PowerMock.verifyAll();
+
+        assertThat(vesAlarm.getEventName(), equalTo(vesAlarms.get(0).getEventName()));
     }
 
     @Test

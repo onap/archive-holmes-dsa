@@ -18,16 +18,16 @@ package org.onap.holmes.dsa.dmaappolling;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.http.HttpResponse;
 import org.onap.holmes.common.api.stat.VesAlarm;
 import org.onap.holmes.common.dropwizard.ioc.utils.ServiceLocatorHolder;
 import org.onap.holmes.common.exception.CorrelationException;
+import org.onap.holmes.common.utils.GsonUtil;
+import org.onap.holmes.common.utils.HttpsUtils;
 
 @Getter
 @Setter
@@ -75,11 +75,16 @@ public class Subscriber {
         }
     }
 
-    private List<String> getDMaaPData() {
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(url + "/" + consumerGroup + "/" + consumer);
-        Response response = webTarget.queryParam("timeout", timeout).request().get();
-        return response.readEntity(List.class);
+    private List<String> getDMaaPData() throws Exception {
+        String response;
+        try {
+            HttpResponse httpResponse = HttpsUtils
+                    .get(url + "/" + consumerGroup + "/" + consumer, new HashMap<>(), timeout);
+            response = HttpsUtils.extractResponseEntity(httpResponse);
+        } catch (Exception e) {
+            throw e;
+        }
+        return GsonUtil.jsonToBean(response, List.class);
     }
 
     private List<VesAlarm> extractVesAlarm(List<String> responseEntity) throws IOException {
