@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.http.HttpResponse;
@@ -56,8 +58,9 @@ public class Subscriber {
     private boolean secure;
     private String topic;
     private String url;
-    private String consumerGroup = "homlesGroup1";
-    private String consumer = "homles1";
+    private String uuid = UUID.randomUUID() + "";
+    private String consumerGroup = "homlesGroup" + uuid;
+    private String consumer = "homles" + uuid;
     private String authInfo;
     private String authExpDate;
 
