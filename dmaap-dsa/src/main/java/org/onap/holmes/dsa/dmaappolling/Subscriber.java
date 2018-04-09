@@ -24,7 +24,9 @@ import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.onap.holmes.common.api.stat.VesAlarm;
 import org.onap.holmes.common.dropwizard.ioc.utils.ServiceLocatorHolder;
 import org.onap.holmes.common.exception.CorrelationException;
@@ -33,6 +35,7 @@ import org.onap.holmes.common.utils.HttpsUtils;
 
 @Getter
 @Setter
+@Slf4j
 public class Subscriber {
 
     private DMaaPResponseUtil dMaaPResponseUtil = ServiceLocatorHolder.getLocator()
@@ -80,12 +83,22 @@ public class Subscriber {
 
     private List<String> getDMaaPData() throws Exception {
         String response;
+        CloseableHttpClient closeableHttpClient = null;
         try {
+            closeableHttpClient = HttpsUtils.getHttpClient(timeout);
             HttpResponse httpResponse = HttpsUtils
-                    .get(url + "/" + consumerGroup + "/" + consumer, new HashMap<>(), timeout);
+                    .get(url + "/" + consumerGroup + "/" + consumer, new HashMap<>(), closeableHttpClient);
             response = HttpsUtils.extractResponseEntity(httpResponse);
         } catch (Exception e) {
             throw e;
+        } finally {
+            if (closeableHttpClient != null) {
+                try {
+                    closeableHttpClient.close();
+                } catch (IOException e) {
+                    log.warn("Failed to close http client!");
+                }
+            }
         }
         return GsonUtil.jsonToBean(response, List.class);
     }
