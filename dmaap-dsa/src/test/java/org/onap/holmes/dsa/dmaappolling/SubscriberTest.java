@@ -17,6 +17,7 @@ package org.onap.holmes.dsa.dmaappolling;
 
 import java.util.HashMap;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.junit.Before;
@@ -36,6 +37,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.easymock.EasyMock.anyObject;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -117,23 +119,22 @@ public class SubscriberTest {
                 "\"specificProblem\": \"specificProblem\"," +
                 "\"vfStatus\": \"vfStatus\"" +
                 "}}}";
-
+        Subscriber subscriber = new Subscriber();
+        subscriber.setUrl("https://www.onap.org");
+        subscriber.setConsumerGroup("group");
+        subscriber.setConsumer("consumer");
         List<String> responseList = new ArrayList<>();
         responseList.add(eventString);
         String responseJson = GsonUtil.beanToJson(responseList);
 
         PowerMockito.mockStatic(HttpsUtils.class);
         HttpResponse httpResponse = PowerMockito.mock(HttpResponse.class);
-        PowerMockito.when(HttpsUtils.get(Matchers.eq("https://www.onap.org/group/consumer"),
+        PowerMockito.when(HttpsUtils.get(Matchers.any(HttpGet.class),
                 Matchers.any(HashMap.class), Matchers.any(CloseableHttpClient.class))).thenReturn(httpResponse);
         PowerMockito.when(HttpsUtils.extractResponseEntity(httpResponse)).thenReturn(responseJson);
 
         PowerMock.replayAll();
 
-        Subscriber subscriber = new Subscriber();
-        subscriber.setUrl("https://www.onap.org");
-        subscriber.setConsumerGroup("group");
-        subscriber.setConsumer("consumer");
         List<VesAlarm> vesAlarms = subscriber.subscribe();
         PowerMock.verifyAll();
 

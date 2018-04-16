@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.onap.holmes.common.api.stat.VesAlarm;
 import org.onap.holmes.common.dropwizard.ioc.utils.ServiceLocatorHolder;
@@ -84,14 +85,16 @@ public class Subscriber {
     private List<String> getDMaaPData() throws Exception {
         String response;
         CloseableHttpClient closeableHttpClient = null;
+        HttpGet httpGet = new HttpGet(url + "/" + consumerGroup + "/" + consumer);
         try {
             closeableHttpClient = HttpsUtils.getHttpClient(timeout);
             HttpResponse httpResponse = HttpsUtils
-                    .get(url + "/" + consumerGroup + "/" + consumer, new HashMap<>(), closeableHttpClient);
+                    .get(httpGet, new HashMap<>(), closeableHttpClient);
             response = HttpsUtils.extractResponseEntity(httpResponse);
         } catch (Exception e) {
             throw e;
         } finally {
+            httpGet.releaseConnection();
             if (closeableHttpClient != null) {
                 try {
                     closeableHttpClient.close();
