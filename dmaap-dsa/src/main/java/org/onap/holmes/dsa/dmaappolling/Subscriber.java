@@ -57,7 +57,7 @@ public class Subscriber {
      * The number of milliseconds to poll interval time. This should normally be used, and set at
      * 15000 or higher.
      */
-    private int period = 15000;
+    private int period = timeout;
 
     private boolean secure;
     private String topic;
@@ -85,7 +85,7 @@ public class Subscriber {
     private List<String> getDMaaPData() throws Exception {
         String response;
         CloseableHttpClient closeableHttpClient = null;
-        HttpGet httpGet = new HttpGet(url + "/" + consumerGroup + "/" + consumer);
+        HttpGet httpGet = new HttpGet(url + "/" + consumerGroup + "/" + consumer + "?timeout=" + period);
         try {
             closeableHttpClient = HttpsUtils.getHttpClient(timeout);
             HttpResponse httpResponse = HttpsUtils
