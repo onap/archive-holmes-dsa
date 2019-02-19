@@ -24,7 +24,7 @@
 
     <groupId>org.onap.holmes.dsa</groupId>
     <artifactId>holmes-dsa-parent</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <packaging>pom</packaging>
     <name>holmes-dsa</name>
     <modules>
